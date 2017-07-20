@@ -19,13 +19,12 @@ module SqsWorker
 
         processed_results = messages.to_a.map { |message| processor.future.process(message) }
 
-        processed_results.each do |result|
-          successful_messages << result.value[:message] if result.value[:success]
-        end
+        manager.batch_done(messages)
 
+        #processed_results.each do |result|
+          #log "Error occured processing message: #{result.value[:message]}" unless result.value[:success]
+        #end
       end
-
-      manager.batch_done(successful_messages)
     end
 
     private
